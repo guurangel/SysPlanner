@@ -11,6 +11,7 @@
 - [📌 Endpoints da API](#-endpoints-da-api)
 - [✅ Funcionalidades](#-funcionalidades)
 - [🗃️ Modelo de Dados](#-modelo-de-dados)
+- [📚 Enums das Entidades](#-enums-das-entidades)
 - [👨‍💻 Nossa equipe](#-nossa-equipe)
 
 ---
