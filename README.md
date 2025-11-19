@@ -217,6 +217,31 @@ UsuarioId: Guid
 Usuario: Usuario
 ```
 
+## 📚 Enums das Entidades
+
+### `Estado`
+Enum que representa os estados brasileiros.
+
+```
+AC, AL, AP, AM, BA, CE, DF, ES, GO, MA,
+MT, MS, MG, PA, PB, PR, PE, PI, RJ, RN,
+RS, RO, RR, SC, SP, SE, TO
+```
+
+### `Categoria`
+Enum que representa as categorias de lembretes.
+
+```
+SAUDE, LAZER, FAMILIA, OUTROS
+```
+
+### `Prioridade`
+Enum que classifica o nível de prioridade do lembrete.
+
+```
+ALTA, MODERADA, BAIXA
+```
+
 ---
 
 ## 👨‍💻 Nossa equipe
