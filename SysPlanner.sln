@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36301.6
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SysPlanner", "SysPlanner\SysPlanner.csproj", "{A151394A-2285-4B5D-9540-1915A02EA0E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SysPlanner.Tests", "SysPlanner.Tests\SysPlanner.Tests.csproj", "{679F8425-672C-4BD3-B275-B274229B0EB0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A151394A-2285-4B5D-9540-1915A02EA0E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A151394A-2285-4B5D-9540-1915A02EA0E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A151394A-2285-4B5D-9540-1915A02EA0E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A151394A-2285-4B5D-9540-1915A02EA0E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{679F8425-672C-4BD3-B275-B274229B0EB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{679F8425-672C-4BD3-B275-B274229B0EB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{679F8425-672C-4BD3-B275-B274229B0EB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{679F8425-672C-4BD3-B275-B274229B0EB0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4DE035FF-0706-4395-9FD3-BF3FFA1C8723}
+	EndGlobalSection
+EndGlobal
