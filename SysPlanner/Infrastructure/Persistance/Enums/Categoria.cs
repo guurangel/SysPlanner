@@ -4,6 +4,8 @@
     {
         SAUDE,
         LAZER,
-        FAMILIA
+        FAMILIA,
+        PROFISSIONAL,
+        OUTROS
     }
 }
