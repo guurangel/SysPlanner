@@ -8,8 +8,6 @@ using SysPlanner.Services;
 using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
-using OpenTelemetry.Instrumentation.AspNetCore;
-using OpenTelemetry.Instrumentation.Http;
 
 public class Program
 {
@@ -18,24 +16,27 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // ---------------------------------------------------------
-        // CONFIGURAÇÕES
+        // PORTA (necessária para Render)
         // ---------------------------------------------------------
+        var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+        builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
-        // Carregar variáveis de ambiente
-        builder.Configuration.AddEnvironmentVariables();
+        // ---------------------------------------------------------
+        // CONNECTION STRING (somente via Environment Variable)
+        // ---------------------------------------------------------
+        var oracleConnectionString = Environment.GetEnvironmentVariable("ORACLE_CONNECTION_STRING");
 
-        // Conexão Oracle (com fallback para env variable)
-        var oracleConnectionString = builder.Configuration.GetConnectionString("Oracle")
-            ?? Environment.GetEnvironmentVariable("ORACLE_CONNECTION_STRING");
+        if (string.IsNullOrEmpty(oracleConnectionString))
+        {
+            throw new Exception("A variável de ambiente ORACLE_CONNECTION_STRING não foi definida.");
+        }
 
         builder.Services.AddDbContext<SysPlannerDbContext>(options =>
             options.UseOracle(oracleConnectionString));
 
-
         // ---------------------------------------------------------
         // HEALTH CHECK
         // ---------------------------------------------------------
-
         builder.Services.AddHealthChecks()
             .AddCheck("Database", () =>
             {
@@ -53,9 +54,8 @@ public class Program
             });
 
         // ---------------------------------------------------------
-        // CORS – LIBERAR ACESSO AO FRONT-END
+        // CORS
         // ---------------------------------------------------------
-
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowAll",
@@ -67,7 +67,6 @@ public class Program
         // ---------------------------------------------------------
         // CONTROLLERS + JSON
         // ---------------------------------------------------------
-
         builder.Services.AddControllers()
             .AddJsonOptions(options =>
             {
@@ -77,9 +76,8 @@ public class Program
             });
 
         // ---------------------------------------------------------
-        // VERSIONAMENTO
+        // API VERSIONING
         // ---------------------------------------------------------
-
         builder.Services.AddApiVersioning(options =>
         {
             options.DefaultApiVersion = new ApiVersion(1, 0);
@@ -90,39 +88,40 @@ public class Program
         // ---------------------------------------------------------
         // SWAGGER
         // ---------------------------------------------------------
-
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
         // ---------------------------------------------------------
-        // INJEÇÃO DE DEPENDÊNCIA
+        // INJEÇÃO DE DEPENDÊNCIAS
         // ---------------------------------------------------------
-
         builder.Services.AddScoped<IUsuarioService, UsuarioService>();
         builder.Services.AddScoped<ILembreteService, LembreteService>();
 
         // ---------------------------------------------------------
-        // TRATAMENTO GLOBAL DE ERROS (IMPORTANTE!)
+        // GLOBAL ERROR HANDLING
         // ---------------------------------------------------------
-
         builder.Services.AddProblemDetails();
 
-        // Logging já é configurado automaticamente, mas podemos adicionar níveis
+        // ---------------------------------------------------------
+        // LOGGING
+        // ---------------------------------------------------------
         builder.Logging.ClearProviders();
         builder.Logging.AddConsole();
         builder.Logging.AddDebug();
         builder.Logging.SetMinimumLevel(LogLevel.Information);
 
-        // OpenTelemetry Tracing
+        // ---------------------------------------------------------
+        // OPENTELEMETRY (LOGS / TRACING / SPANS)
+        // ---------------------------------------------------------
         builder.Services.AddOpenTelemetry()
-        .WithTracing(tracerProviderBuilder =>
-        {
-            tracerProviderBuilder
-                .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("SysPlanner"))
-                .AddAspNetCoreInstrumentation()
-                .AddHttpClientInstrumentation()
-                .AddConsoleExporter();
-        });
+            .WithTracing(tracerProviderBuilder =>
+            {
+                tracerProviderBuilder
+                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("SysPlanner"))
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddConsoleExporter();
+            });
 
         var app = builder.Build();
 
@@ -142,10 +141,7 @@ public class Program
         // CORS
         app.UseCors("AllowAll");
 
-        // Controllers
         app.MapControllers();
-
-        // Health Check
         app.MapHealthChecks("/health");
 
         app.Run();
