@@ -1,0 +1,15 @@
+﻿services:
+  - type: web
+    name: sysplanner-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: ASPNETCORE_URLS
+        value: http://0.0.0.0:8080
+      - key: ORACLE_CONNECTION_STRING
+        sync: false

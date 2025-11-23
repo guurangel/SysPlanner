@@ -27,15 +27,13 @@ public class Program
         var oracleConnectionString = Environment.GetEnvironmentVariable("ORACLE_CONNECTION_STRING");
 
         if (string.IsNullOrEmpty(oracleConnectionString))
-        {
             throw new Exception("A variável de ambiente ORACLE_CONNECTION_STRING não foi definida.");
-        }
 
         builder.Services.AddDbContext<SysPlannerDbContext>(options =>
             options.UseOracle(oracleConnectionString));
 
         // ---------------------------------------------------------
-        // HEALTH CHECK
+        // HEALTH CHECK PERSONALIZADO (teste real no Oracle)
         // ---------------------------------------------------------
         builder.Services.AddHealthChecks()
             .AddCheck("Database", () =>
@@ -44,12 +42,14 @@ public class Program
                 {
                     using var scope = builder.Services.BuildServiceProvider().CreateScope();
                     var db = scope.ServiceProvider.GetRequiredService<SysPlannerDbContext>();
-                    db.Database.CanConnect();
-                    return HealthCheckResult.Healthy("Conectado ao banco de dados com sucesso.");
+
+                    db.Database.ExecuteSql($"SELECT 1 FROM DUAL");
+
+                    return HealthCheckResult.Healthy("Conectado ao Oracle!");
                 }
                 catch (Exception ex)
                 {
-                    return HealthCheckResult.Unhealthy("Falha ao conectar ao banco.", ex);
+                    return HealthCheckResult.Unhealthy("Falha ao conectar ao Oracle.", ex);
                 }
             });
 
@@ -111,7 +111,7 @@ public class Program
         builder.Logging.SetMinimumLevel(LogLevel.Information);
 
         // ---------------------------------------------------------
-        // OPENTELEMETRY (LOGS / TRACING / SPANS)
+        // OPENTELEMETRY
         // ---------------------------------------------------------
         builder.Services.AddOpenTelemetry()
             .WithTracing(tracerProviderBuilder =>
@@ -138,7 +138,6 @@ public class Program
         app.UseHttpsRedirection();
         app.UseAuthorization();
 
-        // CORS
         app.UseCors("AllowAll");
 
         app.MapControllers();
