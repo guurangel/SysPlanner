@@ -129,7 +129,7 @@ public class Program
         // PIPELINE
         // ---------------------------------------------------------
 
-        if (app.Environment.IsDevelopment())
+        if (app.Environment.IsDevelopment() || true)
         {
             app.UseSwagger();
             app.UseSwaggerUI();
